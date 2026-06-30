@@ -1,5 +1,5 @@
 const { Server } = require("socket.io");
-const saveMessage = require("../controllers/message.controller");
+const { saveMessage } = require("../controllers/message.controller");
 
 const initSocket = (server) => {
   const io = new Server(server, {
@@ -27,10 +27,11 @@ const initSocket = (server) => {
         try {
             const {sender, receiver} = data;
             const roomId = [sender,receiver].sort().join('-')
-
+            // console.log(data);
             // message save to the DB 
             const saveMsg = await saveMessage(data)
             io.to(roomId).emit('receiveMessage', saveMsg)
+            // console.log(saveMsg);
         }
         catch (err)
         {
