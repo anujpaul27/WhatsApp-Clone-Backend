@@ -5,7 +5,6 @@ const saveMessage = async (messageData) =>
     try 
     {
         const {sender, receiver, text, messageType} = messageData;
-        console.log(messageData);
 
         // create a new message
         const newMessage = new messageModel({
@@ -27,13 +26,13 @@ const getMessages = async (req, res) => {
     try {
         const { senderId, receiverId } = req.params;
 
-        // এমন সব মেসেজ খোঁজা যেখানে (A পাঠিয়েছে B-কে) অথবা (B পাঠিয়েছে A-কে)
+       // find message link this A user send B and B user send A 
         const messages = await messageModel.find({
             $or: [
                 { sender: senderId, receiver: receiverId },
                 { sender: receiverId, receiver: senderId }
             ]
-        }).sort({ createdAt: 1 }); // ১ দিলে পুরানো মেসেজ আগে এবং নতুন মেসেজ নিচে থাকবে (Chrono order)
+        }).sort({ createdAt: 1 }); // 1 means old message is up and new message show down on the message box  (Chrono order)
 
         res.status(200).json(messages);
     } catch (error) {
