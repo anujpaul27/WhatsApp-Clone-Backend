@@ -22,6 +22,10 @@ const messageSchema = new mongoose.Schema({
         type: String,
         enum: ['text','image','audio'],
         default: 'text'
+    },
+    isSeen: {
+        type: Boolean,
+        default: false
     }
 },
 {timestamps: true}

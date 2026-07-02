@@ -1,8 +1,15 @@
 const express = require('express')
-const { getMessages } = require('../controllers/message.controller')
-const router = express.Router()
+const { getMessages, hindUnseenMessageCount } = require('../controllers/message.controller')
+const messageRouter = express.Router()
 
-router.get('/:senderId/:receiverId',getMessages)
+messageRouter.get('/:senderId/:receiverId',getMessages)
+
+/**
+ * @route   /api/messages/mark-as-seen
+ * @desc    when user click to seen message hide unseen count from this box
+ * @access  Privet
+ */
+messageRouter.put('/mark-as-seen', hindUnseenMessageCount)
 
 
-module.exports = router
+module.exports = messageRouter
