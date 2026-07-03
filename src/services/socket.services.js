@@ -9,8 +9,23 @@ const initSocket = (server) => {
     },
   });
 
+  const onlineUsers = {}
+
   io.on("connection", (socket) => {
     console.log("User connected via services: 👤", socket.id);
+
+    // 3 user online offline status update feature 
+    //3.1 when user connect, add user to online users list
+    socket.on('addUserOnline', (userId)=> {
+      if (userId)
+      {
+        onlineUsers[userId] = socket.id;
+        console.log(`User ${userId} is now online.`);
+
+        // 3.2 when user connect, send all online users to the client
+        io.emit('getOnlineUsers', Object.keys(onlineUsers))
+      }
+    })
 
     // 1. Create room for individual  
     socket.on('joinRoom', async ({senderId, receiverId})=> {
@@ -38,8 +53,24 @@ const initSocket = (server) => {
             socket.emit('error', 'message send failed')
         }
     })
+
     socket.on('disconnect', ()=> {
         console.log('User disconnected ❌');
+
+        // 3.3 when user disconnect, remove user from online users list
+        for (const userId in onlineUsers)
+        {
+          if (onlineUsers[userId] === socket.id)
+          {
+            delete onlineUsers[userId]
+            console.log(`User ${userId} went offline.`);
+            break;
+          }
+        }
+
+        // 3.4 when user disconnect, send all online users to the client
+        io.emit('getOnlineUsers', Object.keys(onlineUsers))
+
     })
   });
 

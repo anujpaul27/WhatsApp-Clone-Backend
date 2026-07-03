@@ -47,7 +47,7 @@ const hindUnseenMessageCount = async (req, res) => {
   try {
     const { senderId, receiverId } = req.body; // Here senderId is friend and receiverId is you 
 
-    // ওই ফ্রেন্ডের পাঠানো আপনার সব মেসেজকে true করে দেওয়া
+    // Update all messages from the sender to the receiver and mark them as seen
     await messageModel.updateMany(
       { sender: senderId, receiver: receiverId, isSeen: false },
       { $set: { isSeen: true } },
